@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Moderna</title>
+  <style>
+    :root {
+      --color-bg: #eaf0fa;
+      --color-primary: #646cff;
+      --color-accent: #23e3aa;
+      --color-panel: #f8fafc;
+      --color-btn: #c7d0e0;
+      --color-btn-text: #232844;
+      --color-btn-accent: #646cff;
+      --color-btn-equal: #23e3aa;
+      --color-btn-equal-text: #08403a;
+      --color-nav-bg: #646cff;
+      --color-nav-text: #fff;
+      --color-footer-bg: #f8fafc;
+      --color-footer-text: #646cff;
+      --radius: 1.2rem;
+      --shadow: 0 6px 32px rgba(100, 120, 160, 0.13);
+      --transition: 0.2s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg: #1b2036;
+        --color-primary: #8c97ff;
+        --color-accent: #24ddb1;
+        --color-panel: #242849;
+        --color-btn: #353c5a;
+        --color-btn-text: #e7eeff;
+        --color-btn-accent: #8c97ff;
+        --color-btn-equal: #24ddb1;
+        --color-btn-equal-text: #181e23;
+        --color-nav-bg: #202563;
+        --color-nav-text: #aeb7ff;
+        --color-footer-bg: #1b2036;
+        --color-footer-text: #8c97ff;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--color-btn);
+      font-family: 'Inter', Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--color-nav-bg);
+      color: var(--color-nav-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1.7rem;
+      box-shadow: 0 2px 8px rgba(44, 60, 110, 0.08);
+      font-size: 1.11rem;
+      letter-spacing: 0.03em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      min-height: 50px;
+    }
+    .navbar .brand {
+      font-weight: 700;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .navbar .brand img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+        margin-left: 60px
+    }
+    .navbar .brand img:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s;
+    }
+    .navbar nav {
+      display: flex;
+      gap: 1.15rem;
+    }
+    .navbar a {
+      color: var(--color-nav-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.24rem 0.7rem;
+      border-radius: 0.5rem;
+      margin-right: 60px;
+      transition: background 0.17s;
+    }
+    .navbar a:hover, .navbar a:focus {
+      background: rgba(255,255,255,0.18);
+      outline: none;
+    }
+
+    /* Centralização perfeita */
+    .main-content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2vw;
+    }
+    .calculator-wrap {
+      width: 100%;
+      max-width: 370px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .calculator {
+      width: 100%;
+      background: var(--color-panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.1rem 1.3rem 1.3rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      align-items: stretch;
+      transition: box-shadow var(--transition), padding var(--transition);
+    }
+    .display {
+      background: none;
+      border: none;
+      font-size: 2.22rem;
+      color: var(--color-btn-text);
+      width: 100%;
+      text-align: right;
+      outline: none;
+      margin-bottom: 0.6rem;
+      letter-spacing: 1.1px;
+      font-family: inherit;
+      padding: 0.88rem 0.22rem;
+      border-radius: 0.8rem;
+      background: rgba(0,0,0,0.03);
+      transition: background var(--transition);
+      box-sizing: border-box;
+      user-select: none;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.88rem;
+      width: 100%;
+    }
+    button {
+      background: var(--color-btn);
+      border: none;
+      color: var(--color-btn-text);
+      font-size: 1.22rem;
+      border-radius: 1rem;
+      padding: 1.15rem 0.2rem;
+      box-shadow: 0 2px 6px rgba(60, 60, 60, 0.06);
+      transition: background var(--transition), transform 0.09s, color var(--transition);
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    button:active {
+      transform: scale(0.96);
+      filter: brightness(0.93);
+    }
+    .accent {
+      background: var(--color-btn-accent);
+      color: #fff;
+    }
+    .equal {
+      background: var(--color-btn-equal);
+      color: var(--color-btn-equal-text);
+      font-weight: bold;
+      grid-column: span 2;
+    }
+
+    /* Rodapé bonito */
+    footer {
+      background: var(--color-footer-bg);
+      color: var(--color-footer-text);
+      text-align: center;
+      font-size: 1rem;
+      padding: 1.15rem 0 1rem 0;
+      letter-spacing: 0.3px;
+      box-shadow: 0 -1px 8px rgba(60, 90, 140, 0.09);
+      width: 100%;
+      margin-top: auto;
+    }
+    .footer-links {
+      margin: 0.2rem 0 0.18rem 0;
+      display: flex;
+      gap: 1.1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--color-footer-text);
+      text-decoration: none;
+      font-size: 0.97rem;
+      border-bottom: 1.5px dotted var(--color-footer-text);
+      transition: color 0.14s, border-color 0.14s;
+    }
+    .footer-links a:hover {
+      color: var(--color-btn-accent);
+      border-bottom: 1.5px solid var(--color-btn-accent);
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.99rem;
+      }
+      .main-content {
+        padding: 1.2rem 0.1rem 1rem 0.1rem;
+      }
+      .calculator {
+        padding: 1.1rem 0.3rem;
+      }
+      .calculator-wrap {
+        max-width: 99vw;
+      }
+      .display { font-size: 1.19rem; padding: 0.7rem 0.14rem;}
+      .navbar nav { gap: 0.8rem; }
+    }
+    @media (max-width: 400px) {
+      .display { font-size: 1.04rem;}
+      .navbar .brand { font-size: 1rem;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="brand"><img src="logo-joao.png" alt=""></div>
+    <div class="brand">🧮 Calculadora Moderna</div>
+    <nav>
+      <a href="#">Portifolio</a>
+    </nav>
+  </header>
+
+  <!-- Conteúdo Centralizado -->
+  <main class="main-content">
+    <div class="calculator-wrap">
+      <div class="calculator" aria-label="Calculadora moderna">
+        <!-- Display -->
+        <input type="text" class="display" id="display" value="0" readonly aria-label="Visor da calculadora"/>
+        <!-- Botões -->
+        <div class="buttons">
+          <button class="accent" data-action="clear" title="Limpar tudo (C)">C</button>
+          <button class="accent" data-action="back" title="Apagar último dígito">⌫</button>
+          <button class="accent" data-value="%" title="Porcentagem">%</button>
+          <button class="accent" data-value="/" title="Divisão">÷</button>
+
+          <button data-value="7">7</button>
+          <button data-value="8">8</button>
+          <button data-value="9">9</button>
+          <button class="accent" data-value="*" title="Multiplicação">×</button>
+
+          <button data-value="4">4</button>
+          <button data-value="5">5</button>
+          <button data-value="6">6</button>
+          <button class="accent" data-value="-" title="Subtração">−</button>
+
+          <button data-value="1">1</button>
+          <button data-value="2">2</button>
+          <button data-value="3">3</button>
+          <button class="accent" data-value="+" title="Soma">+</button>
+
+          <button data-value="0" style="grid-column: span 2">0</button>
+          <button data-value="." title="Decimal">,</button>
+          <button class="equal" data-action="equals" title="Igual">=</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">Contato</a>
+      <a href="#">Termos de Uso</a>
+    </div>
+    <div>
+      © 2025 Calculadora Moderna | Feito por <b>João Cláudio</b>
+    </div>
+  </footer>
+
+  <script>
+    // Seleção de elementos
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.buttons button');
+
+    // Estado atual da calculadora
+    let current = '0';
+    let solved = false;
+
+    // Atualiza o visor da calculadora
+    function updateDisplay() {
+      display.value = current.replace('.', ',');
+    }
+
+    // Limpa tudo (C)
+    function clearAll() {
+      current = '0';
+      solved = false;
+      updateDisplay();
+    }
+
+    // Remove último caractere (⌫)
+    function backspace() {
+      if (solved) return;
+      if (current.length === 1 || (current.length === 2 && current.startsWith('-'))) {
+        current = '0';
+      } else {
+        current = current.slice(0, -1);
+      }
+      updateDisplay();
+    }
+
+    // Insere valor (número ou operador)
+    function insertValue(val) {
+      if (solved) {
+        if (/\d/.test(val)) {
+          current = val;
+        } else {
+          current += val;
+        }
+        solved = false;
+      } else {
+        if (/[+\-*/%]$/.test(current) && /[+\-*/%]/.test(val)) return;
+        if (current === '0' && val !== '.' && !/[+\-*/%]/.test(val)) {
+          current = val;
+        } else {
+          if (val === '.' && /\d*\.\d*$/.test(current)) return;
+          current += val;
+        }
+      }
+      updateDisplay();
+    }
+
+    // Executa o cálculo (=)
+    function calculate() {
+      try {
+        let formula = current.replace(/,/g, '.').replace(/÷/g, '/').replace(/×/g, '*');
+        formula = formula.replace(/(\d+(\.\d+)?)%/g, (m, n) => String(Number(n) / 100));
+        let result = eval(formula);
+        if (result === undefined || isNaN(result)) result = 0;
+        current = result.toString().replace('.', ',');
+        solved = true;
+        updateDisplay();
+      } catch {
+        current = 'Erro';
+        solved = true;
+        updateDisplay();
+        setTimeout(clearAll, 1200);
+      }
+    }
+
+    // Eventos dos botões
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-value');
+        const action = btn.getAttribute('data-action');
+        if (action === 'clear') return clearAll();
+        if (action === 'back') return backspace();
+        if (action === 'equals') return calculate();
+        if (val !== null) insertValue(val === ',' ? '.' : val);
+      });
+    });
+
+    // Suporte ao teclado
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') return clearAll();
+      if (e.key === 'Backspace') return backspace();
+      if (e.key === 'Enter' || e.key === '=') return calculate();
+      if ('0123456789.+-*/%'.includes(e.key)) return insertValue(e.key);
+      if (e.key === ',') return insertValue('.');
+    });
+
+    // Inicializa visor
+    updateDisplay();
+  </script>
+</body>
+</html>
